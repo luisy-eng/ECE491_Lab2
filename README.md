@@ -41,10 +41,5 @@ ECE491_Lab2/
 ├── Task3/
 │   └── fgsm_defenses.ipynb
 │
-├── Report/
-│   ├── main.tex
-│   ├── references.bib
-│   ├── neurips_2022.sty
-│   └── figures/
 │
 └── README.md
