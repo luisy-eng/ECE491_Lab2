@@ -43,10 +43,10 @@ ECE491_Lab2/
 │   └── fgsm_defenses.ipynb
 │
 ├── Report/
-│   ├── main.tex
+│   ├── LuisHernandez_Lab2.pdf
 │   ├── references.bib
 │   ├── neurips_2022.sty
-│   └── figures/
+│  
 │
 └── README.md
 ```
