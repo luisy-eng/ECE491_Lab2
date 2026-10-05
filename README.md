@@ -42,6 +42,7 @@ ECE491_Lab2/
 ├── Task3/
 │   └── fgsm_defenses.ipynb
 │
+│
 └── README.md
 ```
 
@@ -51,9 +52,9 @@ ECE491_Lab2/
 
 Task 1 reproduces the PyTorch FGSM adversarial-example demonstration using the MNIST handwritten digit dataset.
 
-The Fast Gradient Sign Method generates an adversarial example using
+The Fast Gradient Sign Method generates an adversarial example using:
 
-$$
+```math
 x_{\mathrm{adv}}
 =
 x +
@@ -62,15 +63,15 @@ x +
 \left(
 \nabla_x J(\theta,x,y)
 \right)
-$$
+```
 
 where:
 
-- $x$ is the original input image.
-- $y$ is the correct class label.
-- $\theta$ represents the neural network parameters.
-- $J$ is the loss function.
-- $\epsilon$ controls the magnitude of the perturbation.
+- `x` is the original input image.
+- `y` is the correct class label.
+- `θ` represents the neural network parameters.
+- `J` is the loss function.
+- `ε` controls the magnitude of the perturbation.
 
 FGSM modifies the input in a direction that increases the classification loss.
 
@@ -86,7 +87,7 @@ The following perturbation strengths were evaluated:
 ε = 0.30
 ```
 
-As $\epsilon$ increases, the adversarial perturbation becomes stronger and the classifier becomes increasingly likely to produce an incorrect prediction.
+As `ε` increases, the adversarial perturbation becomes stronger and the classifier becomes increasingly likely to produce an incorrect prediction.
 
 ### Notebook
 
@@ -106,9 +107,9 @@ For this experiment:
 Target Class = 5
 ```
 
-The targeted FGSM attack is
+The targeted FGSM attack is:
 
-$$
+```math
 x_{\mathrm{adv}}
 =
 x -
@@ -117,7 +118,7 @@ x -
 \left(
 \nabla_x J(\theta,x,y_{\mathrm{target}})
 \right)
-$$
+```
 
 The perturbation direction is reversed because the objective is to reduce the loss associated with the selected target class.
 
@@ -141,7 +142,7 @@ A total of **8,965 correctly classified MNIST test samples** were eligible for t
 
 The targeted attack became increasingly effective as the perturbation magnitude increased.
 
-At $\epsilon=0.30$, the attack successfully forced **3,510 of 8,965 samples** into the target class, corresponding to a targeted attack success rate of **39.15%**.
+At `ε = 0.30`, the attack successfully forced **3,510 of 8,965 samples** into the target class, corresponding to a targeted attack success rate of **39.15%**.
 
 ### Notebook
 
@@ -208,21 +209,21 @@ This corresponds to a reduction of **15.06 percentage points** compared with the
 
 The second defense strategy adds random Gaussian noise to the adversarial image.
 
-The defended image is represented as
+The defended image is represented as:
 
-$$
+```math
 x_{\mathrm{def}}
 =
 x_{\mathrm{adv}} + n
-$$
+```
 
-where
+where:
 
-$$
+```math
 n \sim \mathcal{N}(0,\sigma^2)
-$$
+```
 
-and $\sigma$ controls the magnitude of the added random noise.
+and `σ` controls the magnitude of the added random noise.
 
 Several noise levels were evaluated.
 
@@ -288,7 +289,7 @@ The experiments produced several important observations:
 - Neural networks can be vulnerable to small gradient-based input perturbations.
 - Increasing FGSM perturbation strength increases attack effectiveness.
 - Targeted attacks are more restrictive than untargeted attacks because the adversarial input must be moved toward one specific class.
-- The targeted FGSM attack achieved a maximum tested success rate of **39.15%** at $\epsilon=0.30$.
+- The targeted FGSM attack achieved a maximum tested success rate of **39.15%** at `ε = 0.30`.
 - All tested preprocessing defenses reduced targeted attack success.
 - Mean filtering was the strongest tested defense.
 - Gaussian-noise injection also reduced attack success, but less effectively than the denoising filters.
@@ -305,7 +306,7 @@ The experiments produced several important observations:
 | Gaussian Blur | 26.99% |
 | **Mean Filter** | **24.09%** |
 | Median Filter | 25.02% |
-| Gaussian Noise ($\sigma=0.20$) | 31.91% |
+| Gaussian Noise (`σ = 0.20`) | 31.91% |
 
 Among the tested defense configurations, the **mean filter achieved the lowest targeted attack success rate at 24.09%**.
 
@@ -386,7 +387,13 @@ The complete report contains:
 
 The report follows the **NeurIPS 2022 LaTeX format**.
 
-> If the compiled PDF is added to the `Report` directory, a direct PDF link can also be added here.
+If the compiled PDF is placed in the `Report` folder, add:
+
+```markdown
+### Full Report
+
+[View Full Lab Report (PDF)](Report/ECE491_Lab2_Report.pdf)
+```
 
 ---
 
