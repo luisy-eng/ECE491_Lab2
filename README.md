@@ -382,9 +382,6 @@ The complete report contains:
 - Conclusion
 - References
 
-### LaTeX Source
-
-[View Report LaTeX Source](Report/main.tex)
 
 ### References
 
