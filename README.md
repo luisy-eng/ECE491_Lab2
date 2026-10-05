@@ -8,7 +8,8 @@ The lab consists of three main tasks:
 2. Modify FGSM to perform a targeted attack toward class `5`.
 3. Evaluate preprocessing defenses against the targeted adversarial attack.
 
-The project was implemented using **Python, PyTorch, and Google Colab**. The final report was written in LaTeX using the **NeurIPS 2022 format**.
+The experiments were implemented using **Python, PyTorch, and Google Colab**.  
+A final report was written using the **NeurIPS 2022 LaTeX format**.
 
 ---
 
@@ -18,13 +19,13 @@ The objectives of this lab are to:
 
 - Understand how FGSM generates adversarial examples.
 - Evaluate how perturbation strength affects model performance.
-- Implement an untargeted adversarial attack.
-- Modify FGSM into a targeted attack.
+- Implement an untargeted FGSM attack.
+- Modify FGSM into a targeted adversarial attack.
 - Force MNIST samples toward a selected target class.
 - Evaluate denoising-based defenses.
 - Evaluate Gaussian-noise defenses.
 - Compare defenses using targeted attack success rate.
-- Visualize the effects of attacks and defenses.
+- Visualize the effects of adversarial attacks and defenses.
 
 ---
 
@@ -43,10 +44,9 @@ ECE491_Lab2/
 │   └── fgsm_defenses.ipynb
 │
 ├── Report/
-│   ├── LuisHernandez_Lab2.pdf
-│   ├── references.bib
+│   ├── ECE491_Lab2_Report.pdf
 │   ├── neurips_2022.sty
-│  
+│   └── references.bib
 │
 └── README.md
 ```
@@ -57,17 +57,10 @@ ECE491_Lab2/
 
 Task 1 reproduces the PyTorch FGSM adversarial-example demonstration using the MNIST handwritten digit dataset.
 
-The Fast Gradient Sign Method generates an adversarial example using:
+The Fast Gradient Sign Method generates an adversarial image using:
 
-```math
-x_{\mathrm{adv}}
-=
-x +
-\epsilon
-\operatorname{sign}
-\left(
-\nabla_x J(\theta,x,y)
-\right)
+```text
+x_adv = x + ε · sign(∇x J(θ, x, y))
 ```
 
 where:
@@ -76,9 +69,10 @@ where:
 - `y` is the correct class label.
 - `θ` represents the neural network parameters.
 - `J` is the loss function.
-- `ε` controls the magnitude of the perturbation.
+- `∇x J` is the gradient of the loss with respect to the input image.
+- `ε` controls the magnitude of the adversarial perturbation.
 
-FGSM modifies the input in a direction that increases the classification loss.
+The attack modifies the input in a direction that increases the model's loss for the correct class.
 
 The following perturbation strengths were evaluated:
 
@@ -92,7 +86,7 @@ The following perturbation strengths were evaluated:
 ε = 0.30
 ```
 
-As `ε` increases, the adversarial perturbation becomes stronger and the classifier becomes increasingly likely to produce an incorrect prediction.
+As `ε` increases, the perturbation becomes stronger and the classifier becomes increasingly likely to produce an incorrect prediction.
 
 ### Notebook
 
@@ -104,7 +98,7 @@ As `ε` increases, the adversarial perturbation becomes stronger and the classif
 
 Task 2 modifies the standard FGSM attack into a **targeted adversarial attack**.
 
-Instead of simply causing the classifier to make any incorrect prediction, the objective is to force the classifier toward one specific target class.
+Instead of simply causing any incorrect prediction, the objective is to force the classifier toward one specific target class.
 
 For this experiment:
 
@@ -114,18 +108,13 @@ Target Class = 5
 
 The targeted FGSM attack is:
 
-```math
-x_{\mathrm{adv}}
-=
-x -
-\epsilon
-\operatorname{sign}
-\left(
-\nabla_x J(\theta,x,y_{\mathrm{target}})
-\right)
+```text
+x_adv = x - ε · sign(∇x J(θ, x, y_target))
 ```
 
-The perturbation direction is reversed because the objective is to reduce the loss associated with the selected target class.
+The major difference from untargeted FGSM is the direction of the perturbation.
+
+In the targeted attack, the gradient is calculated using the desired target class and the perturbation is subtracted from the input. This moves the image in a direction that reduces the loss associated with the selected target.
 
 Samples whose original class was already `5` were excluded from the targeted attack evaluation.
 
@@ -147,7 +136,7 @@ A total of **8,965 correctly classified MNIST test samples** were eligible for t
 
 The targeted attack became increasingly effective as the perturbation magnitude increased.
 
-At `ε = 0.30`, the attack successfully forced **3,510 of 8,965 samples** into the target class, corresponding to a targeted attack success rate of **39.15%**.
+At `ε = 0.30`, the attack successfully forced **3,510 of 8,965 samples** into target class `5`, corresponding to a targeted attack success rate of **39.15%**.
 
 ### Notebook
 
@@ -174,20 +163,20 @@ The undefended targeted attack success rate was:
 
 Two categories of defenses were evaluated:
 
-1. Denoising / smoothing defenses
-2. Gaussian-noise defense
+1. Denoising and smoothing
+2. Gaussian-noise injection
 
 ---
 
 ## Denoising Defenses
 
-Three image-processing methods were tested:
+Three image-processing techniques were evaluated:
 
 - Gaussian blur
 - Mean filtering
 - Median filtering
 
-Each defense was applied to the adversarial image before it was passed back into the classifier.
+Each defense was applied to the adversarial image before the image was passed back through the classifier.
 
 ### Denoising Results
 
@@ -216,19 +205,17 @@ The second defense strategy adds random Gaussian noise to the adversarial image.
 
 The defended image is represented as:
 
-```math
-x_{\mathrm{def}}
-=
-x_{\mathrm{adv}} + n
+```text
+x_def = x_adv + n
 ```
 
-where:
+where the added noise is sampled from:
 
-```math
-n \sim \mathcal{N}(0,\sigma^2)
+```text
+n ~ Normal(0, σ²)
 ```
 
-and `σ` controls the magnitude of the added random noise.
+The parameter `σ` controls the magnitude of the added noise.
 
 Several noise levels were evaluated.
 
@@ -245,15 +232,15 @@ Several noise levels were evaluated.
 
 Increasing the amount of Gaussian noise consistently reduced the targeted attack success rate.
 
-However, Gaussian-noise injection was less effective than the tested denoising filters.
+However, Gaussian-noise injection was less effective than the three tested denoising filters.
 
 ---
 
 ## Visual Defense Example
 
-A successful targeted FGSM example was also used to visualize how each defense affected the image and model prediction.
+A successful targeted FGSM example was selected to visualize how each defense affected both the image and the neural network prediction.
 
-For the selected sample:
+The selected sample produced the following results:
 
 ```text
 Original Image
@@ -280,10 +267,10 @@ For this example:
 
 - **Gaussian blur** defeated the targeted attack and restored the correct class `0`.
 - **Mean filtering** defeated the targeted attack and restored the correct class `0`.
-- **Median filtering** defeated the targeted attack because the prediction changed away from class `5`, but it did not restore the correct class.
-- **Gaussian noise** did not defeat the targeted attack for this sample because the prediction remained class `5`.
+- **Median filtering** defeated the targeted attack because the prediction moved away from class `5`, but it did not restore the correct class.
+- **Gaussian noise** did not defeat the targeted attack for this particular example because the prediction remained class `5`.
 
-This demonstrates an important distinction between **defeating a targeted attack** and **recovering the original correct classification**.
+This demonstrates an important distinction between **defeating a targeted adversarial attack** and **recovering the original correct classification**.
 
 ---
 
@@ -292,14 +279,14 @@ This demonstrates an important distinction between **defeating a targeted attack
 The experiments produced several important observations:
 
 - Neural networks can be vulnerable to small gradient-based input perturbations.
-- Increasing FGSM perturbation strength increases attack effectiveness.
+- Increasing FGSM perturbation strength increases adversarial attack effectiveness.
 - Targeted attacks are more restrictive than untargeted attacks because the adversarial input must be moved toward one specific class.
 - The targeted FGSM attack achieved a maximum tested success rate of **39.15%** at `ε = 0.30`.
 - All tested preprocessing defenses reduced targeted attack success.
 - Mean filtering was the strongest tested defense.
-- Gaussian-noise injection also reduced attack success, but less effectively than the denoising filters.
-- A defense can defeat the target-class prediction without necessarily restoring the original correct classification.
-- Strong preprocessing can improve adversarial robustness while also modifying useful image information.
+- Gaussian-noise injection also reduced attack success, although less effectively than the denoising filters.
+- Defeating the selected target class does not necessarily mean recovering the original correct class.
+- Strong preprocessing may improve robustness while also modifying useful information in the original image.
 
 ---
 
@@ -352,9 +339,9 @@ Each task can be viewed and run independently from its corresponding notebook.
 
 [Open Task 3 Notebook](Task3/fgsm_defenses.ipynb)
 
-The main Python libraries used are:
+The primary Python libraries used are:
 
-```python
+```text
 torch
 torchvision
 numpy
@@ -376,26 +363,20 @@ The complete report contains:
 - Denoising defense experiments
 - Gaussian-noise defense experiments
 - Experimental tables
-- Adversarial-example visualizations
-- Defense visualizations
+- Attack and defense visualizations
 - Overall discussion
 - Conclusion
 - References
 
+### Full Report
+
+[View Full Lab Report (PDF)](Report/ECE491_Lab2_Report.pdf)
 
 ### References
 
 [View references.bib](Report/references.bib)
 
 The report follows the **NeurIPS 2022 LaTeX format**.
-
-If the compiled PDF is placed in the `Report` folder, add:
-
-```markdown
-### Full Report
-
-[View Full Lab Report (PDF)](Report/ECE491_Lab2_Report.pdf)
-```
 
 ---
 
